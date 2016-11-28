@@ -31,6 +31,29 @@ void ShowAboutUs()				//显示关于我们
 {
 	cout<<"\t ○●  游戏编号：GB"<<endl<<endl
 		<<"\t ○●  作者：Xiao Molory"<<endl<<endl
-		<<"\t ○●  版本：version 2.0"<<endl<<endl;
-		
+		<<"\t ○●  版本：version 2.0"<<endl<<endl;		
+}
+void ShowRankTitle()						//显示排行榜头部
+{
+	cout<<"┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓"<<endl
+		<<"○●○●○●  五子棋  排行榜  ●○●○●○"<<endl
+		<<"┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗"<<endl;
+}
+void ShowGameGoTitle()			//显示正在游戏头部
+{
+	cout<<"\t ┏━━━━━━┓"<<endl
+		<<"\t ┃  游戏开始  ┃"<<endl
+		<<"\t ┗━━━━━━┛"<<endl;
+}
+void ShowGameEndTitle()		//显示游戏结束头部
+{
+	cout<<"\t ┏━━━━━━┓"<<endl
+		<<"\t ┃  游戏结束  ┃"<<endl
+		<<"\t ┗━━━━━━┛"<<endl;
+}
+void BoardReappearTitle()		//显示棋盘重现的头部
+{
+	cout<<"┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓"<<endl
+		<<"○●○●○● 排行榜  棋盘重现 ●○●○●○"<<endl
+		<<"┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗┗"<<endl;
 }

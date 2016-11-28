@@ -11,7 +11,11 @@ Player::Player(string name)						//构造函数
 }
 Player::~Player()										//析构函数
 {
+	//cout<<"删除玩家"<<this->name<<endl;
+	//system("pause");
 	delete(this->chessArr);
+	//cout<<"删除成功！"<<endl;
+	//system("pause");
 }
 
 int Player:: PushChess(Chess c , ChessBoard &cb)					//落子，成功返回1 失败返回0
@@ -52,4 +56,14 @@ void Player:: SetName(string newName)		//属性name
 void Player:: SetWin(bool pd)									//属性win
 {
 	this->win = pd;
+}
+
+/*其他成员函数*/
+void Player:: Copy(Player &copy)					//拷贝函数
+{
+	copy.name = this->name;						//拷贝姓名
+	copy.win = this->win;								//拷贝胜负情况
+	copy.chessNum = this->chessNum;		//拷贝棋路棋子数
+	for(int i=0;i<this->chessNum;i++)			//拷贝棋路中的棋子
+		copy.chessArr[i] = this->chessArr[i];
 }

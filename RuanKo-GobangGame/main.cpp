@@ -5,8 +5,77 @@
 #include "ChessBoard.h"
 #include "Player.h"
 #include "Chess.h"
+#include "Ranking.h"
 using namespace std;
 
+int GamesGo(Player &p1, Player &p2, ChessBoard &cb);		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå
+int GamesRanking();						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
+
+Ranking rankBoard;			//´´½¨Ò»¸öÅÅĞĞ°ñ¶ÔÏó
+
+int main()
+{
+	/*FOR TEST*/
+	ChessBoard cb;
+
+	Chess cc[10];
+	cc[0].SetAll(5,5,1);
+	cc[1].SetAll(3,4,-1);
+	cc[2].SetAll(2,6,1);
+	cc[3].SetAll(7,3,-1);
+	for(int i=0;i<4;i++) cb.AddChess(cc[i]);
+
+	rankBoard.InsertRec(cb , "Ğ¡Ã÷");
+	/*FOR TEST*/
+
+	char choice;
+	bool running = true;
+	while(running)
+	{
+		system("cls");
+		SayHello();
+		ShowMainMenu();
+		cout<<endl<<"ÇëÊäÈëÑ¡Ïî£¨1/2/3/4/5/0£©£º";
+		cin>>choice;
+		cin.ignore(1024,'\n');
+		switch ( choice )
+		{
+		case '0':			//ÍË³ö
+			system("cls");
+			running = false;		//Ñ­»·±êÊ¶ÖÃ·ñ
+			SayGoodbye();			//´òÓ¡½áÊø
+			break;
+		case '1':			//ĞÂ½¨ÓÎÏ·
+			{
+			Player p1;			//´´½¨Íæ¼Ò1
+			Player p2;			//´´½¨Íæ¼Ò2
+			ChessBoard cb(15,15);		//´´½¨ÆåÅÌ
+			GamesGo(p1,p2,cb);		//ÓÎÏ·¿ªÊ¼
+			break;
+			}
+		case '2':			//¼ÓÔØÓÎÏ·
+			cout<<"ÔİÎ´¿ª·Å£¡"<<endl;
+			break;
+		case '3':			//ÅÅĞĞ°ñ
+			GamesRanking();
+			break;
+		case '4':			//ÓÎÏ·¹æÔò
+			SayHello();
+			cout<<"4"<<endl;
+			break;
+		case '5':			//¹ØÓÚÎÒÃÇ
+			system("cls");
+			SayHello();
+			ShowAboutUs();
+			break;
+		default:
+			cout<<"ÄúµÄÊäÈëÓĞÎó£¡Çë¼ì²éÊäÈë£¡"<<endl;
+			break;
+		}
+		system("pause");
+	}
+	return 0;
+}
 int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå
 {
 	string pName1,pName2;			//player name
@@ -24,7 +93,9 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 		system("cls");
 		char x;				//×Ö·ûĞÍĞĞ×ø±ê
 		int chessX=0 , chessY=0;					//³õÊ¼»¯Æå×ÓÎ»ÖÃ
-		cb.ShowBoard();								//Õ¹Ê¾ÆåÅÌ
+		bool gameWin = false;					//³õÊ¼»¯ÆåÅÌÊ¤¸º
+		ShowGameGoTitle();						//ÏÔÊ¾ÓÎÏ·¿ªÊ¼Í·²¿
+		cb.ShowBoard(gameWin);				//Õ¹Ê¾ÆåÅÌ
 
 		//ÌáÊ¾ÊäÈë
 		cout<<"Çë";
@@ -55,12 +126,21 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 		{
 			if( cb.IsBoardWin(c) )
 			{
+				gameWin = true;
+				Record newRec;
 				system("cls");
-				cb.ShowBoard();			//ÔÙ´òÓ¡Ò»´Î×îºóÆåÅÌ
+				ShowGameEndTitle();					//ÏÔÊ¾ÓÎÏ·½áÊøÍ·²¿
+				cb.ShowBoard(gameWin);			//ÔÙ´òÓ¡Ò»´Î×îºóÆåÅÌ
 				if(status == -1)			//µ±Ç°×´Ì¬ÎªºÚ×Ó£¬Ôòp1»ñÊ¤
+				{
+					rankBoard.InsertRec(cb,p1.GetName());
 					p1.SetWin(true);
+				}
 				else 
+				{
+					rankBoard.InsertRec(cb,p2.GetName());
 					p2.SetWin(true);
+				}
 				cout<<"ÓÎÏ·½áÊø£¡";
 				if(p1.GetWin()) cout<<p1.GetName()<<"»ñÊ¤£¡"<<endl<<endl;
 				else cout<<p2.GetName()<<"»ñÊ¤£¡"<<endl<<endl;
@@ -72,53 +152,38 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 	cout<<"<< ºÍÆå >>"<<endl;		//ÈôÆåÅÌÒÑÂúÔòºÍÆå
 	return 0;
 }
-int main()
+int GamesRanking()						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
 {
-
-	char choice;
-	bool running = true;
-	while(running)
+	system("cls");
+	ShowRankTitle();					//ÏÔÊ¾ÅÅĞĞ°ñÍ·²¿
+	rankBoard.ShowRank();		//´òÓ¡ÅÅĞĞ°ñÄÚÈİ
+	char numCharIn[20];			//´´½¨×Ö·ûÊı×é½ÓÊÕÊäÈë 
+	cout<<"ÊäÈëÅÅÃû±àºÅ¿ÉÏÔÊ¾¸Ã±àºÅÆåÅÌµÄ×îºóÕ½¿ö£¨ÊäÈë0·µ»ØÖ÷½çÃæ£©£º";
+	cin>>numCharIn;				
+	for(int i=0;i<strlen(numCharIn);i++)			//Èç¹ûÊäÈë°üº¬³ıÊı×ÖµÄÆäËû×Ö·û£¬ÔòÌáÊ¾´íÎó²¢·µ»Ø
 	{
-		system("cls");
-		SayHello();
-		ShowMainMenu();
-		cout<<endl<<"ÇëÊäÈëÑ¡Ïî£¨1/2/3/4/5/0£©£º";
-		cin>>choice;
-		cin.ignore(1024,'\n');
-		switch ( choice )
+		if( ! (numCharIn[i]>='0' && numCharIn[i]<='9') )
 		{
-		case '0':			//ÍË³ö
-			system("cls");
-			running = false;
-			SayGoodbye();
-			break;
-		case '1':			//ĞÂ½¨ÓÎÏ·
-			{
-			Player p1;
-			Player p2;
-			ChessBoard cb(15,15);
-			GamesGo(p1,p2,cb);		//ÓÎÏ·¿ªÊ¼
-			break;
-			}
-		case '2':			//¼ÓÔØÓÎÏ·
-			cout<<"ÔİÎ´¿ª·Å£¡"<<endl;
-			break;
-		case '3':			//ÅÅĞĞ°ñ
-			cout<<"ÔİÎ´¿ª·Å£¡"<<endl;
-			break;
-		case '4':			//ÓÎÏ·¹æÔò
-			cout<<"4"<<endl;
-			break;
-		case '5':			//¹ØÓÚÎÒÃÇ
-			system("cls");
-			SayHello();
-			ShowAboutUs();
-			break;
-		default:
-			cout<<"ÄúµÄÊäÈëÓĞÎó£¡Çë¼ì²éÊäÈë£¡"<<endl;
-			break;
+			cout<<endl<<"ÄúµÄÊäÈëÓĞÎó£¡¼´½«·µ»ØÖ÷Ò³Ãæ£¡"<<endl<<endl;
+			return 0;
 		}
-		system("pause");
 	}
-	return 0;
+	int numIntIn = atoi(numCharIn);			//½«ÊäÈë×ª»¯Îªint
+	if(numIntIn>rankBoard.GetRankLen() || numIntIn<0)			//Èç¹ûÊäÈëµÄÊı×Ö´óÓÚÅÅĞĞ°ñµÄÏîÄ¿Êı»òĞ¡ÓÚ0
+	{
+		cout<<endl<<"ÄúµÄÊäÈëÓĞÎó£¡¼´½«·µ»ØÖ÷Ò³Ãæ£¡"<<endl<<endl;
+		return 0;
+	}else
+	{
+		switch(numIntIn)
+		{
+		case 0:
+			return 1;
+		default:
+			system("cls");
+			BoardReappearTitle();
+			rankBoard.ShowTheBoard(numIntIn);
+			return 1;	
+		}
+	}
 }

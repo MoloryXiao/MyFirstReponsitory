@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <cstring>
+#include <string>
 #include "ChessBoard.h"
 #include "Chess.h"
 using namespace std;
@@ -28,4 +28,7 @@ public :
 	/*设置属性信息*/
 	void SetName(string newName);			//属性name
 	void SetWin(bool pd);							//属性win
+
+	/*其他成员函数*/
+	void Copy(Player &copy);					//拷贝函数
 };

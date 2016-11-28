@@ -1,4 +1,4 @@
-﻿#pragma 
+﻿#pragma once
 #include "ChessBoard.h"
 #include "Chess.h"
 #include <iomanip>
@@ -15,11 +15,15 @@ ChessBoard:: ChessBoard(int width,int height)					//构造函数
 }
 ChessBoard:: ~ChessBoard()				//析构函数
 {
+	//cout<<"删除棋盘"<<endl;
+	//system("pause");
 	delete(this->chessAll);
+	//cout<<"删除成功！"<<endl;
+	//system("pause");
 }
 
 /*基本成员函数*/
-void ChessBoard:: ShowBoard()			//显示棋盘
+void ChessBoard:: ShowBoard(bool gameWin)			//显示棋盘 gameWin表示棋盘胜负情况
 {
 	/*创建一个用于显示棋面的二维数组*/
 	int **board;
@@ -29,9 +33,6 @@ void ChessBoard:: ShowBoard()			//显示棋盘
 	Init2DArray(board);
 	
 	/*根据二维数组情况画出棋盘*/
-	cout<<"\t ┏━━━━━━┓"<<endl
-		<<"\t ┃  游戏开始  ┃"<<endl
-		<<"\t ┗━━━━━━┛"<<endl;
 	string str[20]={"０","１","２","３","４","５","６","７","８","９","10","11","12","13","14","15"};
 	//列标识打印
 	for(int i=0;i<=this->width;i++)
@@ -63,10 +64,19 @@ void ChessBoard:: ShowBoard()			//显示棋盘
 			else if(board[i][j] == 1) cout<<"●";			//白棋
 		}
 		if(i == 3) cout<<"    棋盘规格："<<this->width<<"×"<<this->height;
-		if(i == 5) cout<<"    当前全盘棋子数："<<this->chessNum;
+		if(i == 5) 
+		{
+			if(gameWin == false)
+				cout<<"    当前全盘棋子数："<<this->chessNum;
+			else
+				cout<<"    游戏全盘棋子数："<<this->chessNum;
+		}
 		if(i == 4) 
 		{
-			cout<<"    前一子落点处：";
+			if(gameWin == false)
+				cout<<"    前一子落点处：";
+			else 
+				cout<<"    最终落子处：";
 			if( this->chessNum == 0) cout<<"无";
 			else
 				cout<<char(this->chessAll[this->chessNum-1].GetX()+'A')
@@ -74,12 +84,21 @@ void ChessBoard:: ShowBoard()			//显示棋盘
 		} 
 		if(i == 12)
 		{
-			if(this->chessNum == 0)				//开局为黑方先手
-				cout<<"    当前为黑方执子：○";
-			else if(this->chessAll[this->chessNum-1].GetColor() == -1)//若棋子数组中顶部为黑棋，则下手为白棋
-				cout<<"    当前为白方执子：●";
-			else
-				cout<<"    当前为黑方执子：○";
+			if(gameWin == false)		//游戏未分胜负
+			{
+				if(this->chessNum == 0)				//开局为黑方先手
+					cout<<"    当前为黑方执子：○";
+				else if(this->chessAll[this->chessNum-1].GetColor() == -1)//若棋子数组中顶部为黑棋，则下手为白棋
+					cout<<"    当前为白方执子：●";
+				else
+					cout<<"    当前为黑方执子：○";
+			}else			//游戏已分胜负
+			{
+				if(this->chessAll[this->chessNum-1].GetColor() == -1)		//若棋子数组中顶部为黑棋，则赢家为黑棋
+					cout<<"    游戏赢家：黑方 ○";
+				else
+					cout<<"    游戏赢家：白方 ●";
+			}
 		}
 		cout<<endl;
 	}
@@ -108,6 +127,14 @@ bool ChessBoard::IsBoardFull()			//判断棋盘是否为满
 		return true;
 	else 
 		return false;
+}
+void ChessBoard::Copy(ChessBoard &copy)	//复制棋盘 将this拷贝到copy中
+{
+	copy.width = this->width;						//复制棋盘宽度
+	copy.height = this->height;						//复制棋盘高度
+	copy.chessNum = this->chessNum;		//复制棋盘棋子数
+	for(int i=0;i<chessNum ; i++)					//复制棋盘上的棋子
+		copy.chessAll[i] = this->chessAll[i];
 }
 
 /*添加棋子函数*/
@@ -143,6 +170,10 @@ int ChessBoard::GetWidth()				//获取棋盘宽度
 int ChessBoard::GetHeight()				//获取棋盘高度
 {
 	return this->height;
+}
+int ChessBoard::GetChessNum()		//获取棋盘棋子数
+{
+	return this->chessNum;
 }
 
 /*胜负判断函数*/
