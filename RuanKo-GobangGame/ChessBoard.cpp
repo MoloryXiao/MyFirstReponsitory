@@ -146,6 +146,11 @@ int ChessBoard:: AddChess(Chess c)				//添加棋子	棋盘已满返回0 添加�
 	this->chessNum++;									//棋子数+1
 	return 1;
 }
+int ChessBoard:: PopChess()
+{
+	this->chessNum -- ;
+	return 1;
+}
 bool ChessBoard::CheckChessXY( Chess c )					//检查棋子XY坐标是否合理	合理返回true 否则返回false
 {
 	//越界判断
@@ -174,6 +179,18 @@ int ChessBoard::GetHeight()				//获取棋盘高度
 int ChessBoard::GetChessNum()		//获取棋盘棋子数
 {
 	return this->chessNum;
+}
+int ChessBoard::GetTheChessX(int count)		//获取棋盘中第count个棋子的X坐标
+{
+	return this->chessAll[count].GetX();
+}
+int ChessBoard::GetTheChessY(int count)			//获取棋盘中第count个棋子的Y坐标
+{
+	return this->chessAll[count].GetY();
+}
+int ChessBoard::GetTheChessColor(int count)		//获取棋盘中第count个棋子的color颜色
+{
+	return this->chessAll[count].GetColor();
 }
 
 /*胜负判断函数*/

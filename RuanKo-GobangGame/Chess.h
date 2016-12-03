@@ -7,7 +7,7 @@ private :
 	int y;				//棋子的纵坐标
 	int color;		//棋子的颜色		-1为黑色 1为白色
 public :
-	Chess(int x=0,int y=0, int color=0);			//棋子的初始化 xy：坐标，color：1白 -1黑
+	Chess(int x=0,int y=0, int color=0);			//棋子的初始化 xy：坐标，color：白1  黑-1
 
 	/*获取属性信息*/
 	int GetX();				//获取x坐标

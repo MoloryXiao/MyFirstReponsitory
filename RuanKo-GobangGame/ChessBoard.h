@@ -25,12 +25,16 @@ public :
 
 	/*添加棋子函数*/
 	int AddChess(Chess c);					//添加棋子	棋盘已满返回0 添加成功返回1
+	int PopChess();								//悔棋
 	bool CheckChessXY(Chess c);		//检查棋子XY坐标是否合理	合理返回true 越界返回false
 
 	/*获取属性信息函数*/
 	int GetWidth();				//获取棋盘宽度
 	int GetHeight();			//获取棋盘高度
 	int GetChessNum();		//获取棋盘棋子数
+	int GetTheChessX(int count);		//获取棋盘中第count个棋子的X坐标
+	int GetTheChessY(int count);		//获取棋盘中第count个棋子的Y坐标
+	int GetTheChessColor(int count);	//获取棋盘中第count个棋子的color颜色
 
 	/*胜负判断函数*/
 	bool IsHorizonWin(Chess c , int **board);						//判断是否水平方向获胜

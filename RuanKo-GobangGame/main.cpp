@@ -15,18 +15,7 @@ Ranking rankBoard;			//¥¥Ω®“ª∏ˆ≈≈––∞Ò∂‘œÛ
 
 int main()
 {
-	/*FOR TEST*/
-	ChessBoard cb;
-
-	Chess cc[10];
-	cc[0].SetAll(5,5,1);
-	cc[1].SetAll(3,4,-1);
-	cc[2].SetAll(2,6,1);
-	cc[3].SetAll(7,3,-1);
-	for(int i=0;i<4;i++) cb.AddChess(cc[i]);
-
-	rankBoard.InsertRec(cb , "–°√˜");
-	/*FOR TEST*/
+	rankBoard.ReadFromFile();		//¥”Œƒº˛¡˜÷–∂¡»Î¿˙ ∑º«¬º
 
 	char choice;
 	bool running = true;
@@ -88,6 +77,7 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//”Œœ∑ø™ º ∑µªÿ÷µŒ™1‘Úƒ≥∑Ωª
 	p2.SetName(pName2);
 
 	int status = -1;		//∆Â◊”◊¥Ã¨ 1Œ™∞◊∆Â£¨-1Œ™∫⁄∆Â£¨ŒÂ◊”∆ÂŒ™∫⁄∆Âœ» ÷
+	bool isPopChess = false;			// «∑Òø…“‘ª⁄∆Â
 	while( ! cb.IsBoardFull() )
 	{
 		system("cls");
@@ -97,56 +87,91 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//”Œœ∑ø™ º ∑µªÿ÷µŒ™1‘Úƒ≥∑Ωª
 		ShowGameGoTitle();						//œ‘ æ”Œœ∑ø™ ºÕ∑≤ø
 		cb.ShowBoard(gameWin);				//’π æ∆Â≈Ã
 
+		cout<<"°æ∫⁄∑Ω£∫"<<p1.GetName()<<"°øVS°æ∞◊∑Ω£∫"<<p2.GetName()<<"°ø"<<endl
+			<<"°æ◊¢°ø ‰»Î' 00 '£∫ÕÀ≥ˆ”Œœ∑\t";
+		if(cb.GetChessNum()!=0)			//ªπ√ª¬‰◊”«∞£¨≤ª ‰≥ˆ’‚æ‰ª∞
+			cout<<" ‰»Î' -1 '£∫ª⁄∆Â"<<endl<<endl;
+		else cout<<endl<<endl;
+
 		//Ã· æ ‰»Î
 		cout<<"«Î";
-		if(status == -1) cout<<"∫⁄∑Ω ‰»Î¬‰◊”Œª÷√(¿˝-C5)£∫";				
+		if(status == -1) cout<<"∫⁄∑Ω ‰»Î¬‰◊”Œª÷√(¿˝-C5)£∫";
 		else cout<<"∞◊∑Ω ‰»Î¬‰◊”Œª÷√(¿˝-C5)£∫";
+		cin>>x>>chessY;		
 
-		cin>>x>>chessY;			
-		if(x>='a' && x<='z')			//–°–¥ ‰»Îµƒ◊™ªª
-			chessX = x-'a';
-		else if(x>='A' && x<='Z')	//¥Û–¥ ‰»Îµƒ◊™ªª
-			chessX = x-'A';			
-		else chessX = -1;			//∆‰À˚¥ÌŒÛ ‰»Î£¨÷√”⁄-1
-
-		Chess c (chessX,chessY,status) ;			//¥¥Ω®∆Â◊”
-
-		//Ω´∆Â◊”ÃÌº”µΩ∆Â≈Ã÷–≤¢±£¥Ê÷¡∆Â ÷µƒ∆Â¬∑∆◊÷–
-		int res = 0;				//≥ı ºªØ¬‰◊”«Èøˆ 0Œ™¬‰◊” ß∞‹ 1Œ™¬‰◊”≥…π¶
-		if(status == -1) 
-			res = p1.PushChess(c,cb);							
-		else if(status == 1)
-			res = p2.PushChess(c,cb);
-
-		if(res == 0)			//¬‰◊” ß∞‹
+		//ÕÀ≥ˆ”Œœ∑≈–∂œ
+		if(x == '0' && chessY == 0)			
 		{
-			cout<<"¬‰◊”Œª÷√”–ŒÛ£°«ÎºÏ≤Èƒ˙µƒ ‰»Î£°"<<endl;
-			system("pause");
-		}else						//¬‰◊”≥…π¶
+			cout<<"ÕÀ≥ˆ”Œœ∑~∑µªÿ÷˜≤Àµ•..."<<endl;
+			return 1;
+		}
+		//ª⁄∆Â≈–∂œ£®∆Â≈Ã≥ı º ±≤ªø…“‘ª⁄∆Â£¨“—æ≠ª⁄∆Â“ª¥Œµƒ≤ªø…“‘‘Ÿ¥Œª⁄∆Â£©
+		if(x == '-' && chessY == 1 && cb.GetChessNum()!=0 )			
 		{
-			if( cb.IsBoardWin(c) )
+			if(isPopChess == true)
 			{
-				gameWin = true;
-				Record newRec;
-				system("cls");
-				ShowGameEndTitle();					//œ‘ æ”Œœ∑Ω· ¯Õ∑≤ø
-				cb.ShowBoard(gameWin);			//‘Ÿ¥Ú”°“ª¥Œ◊Ó∫Û∆Â≈Ã
-				if(status == -1)			//µ±«∞◊¥Ã¨Œ™∫⁄◊”£¨‘Úp1ªÒ §
-				{
-					rankBoard.InsertRec(cb,p1.GetName());
-					p1.SetWin(true);
-				}
+				status = -status;			//÷¥◊”∑Ω÷ÿ÷√
+				if(status == -1)			//∆Â ÷µƒ∆Â¬∑÷–µØ≥ˆ∏√∆Â◊”
+					p1.PopChess();
 				else 
+					p2.PopChess();
+				cb.PopChess();				//∆Â≈Ã“≤µØ≥ˆ∏√∆Â◊”
+				isPopChess = false;		//ª⁄∆Â◊¥Ã¨∏ƒŒ™false
+			}
+			else
+			{
+				cout<<"≤Ÿ◊˜ ß∞‹£°÷ª‘ –Ìª⁄∆Â“ª¥Œ£°"<<endl;	
+				system("pause");
+			}
+		}else			//’˝≥£¬‰◊”
+		{
+			if(x>='a' && x<='z')			//–°–¥ ‰»Îµƒ◊™ªª
+				chessX = x-'a';
+			else if(x>='A' && x<='Z')	//¥Û–¥ ‰»Îµƒ◊™ªª
+				chessX = x-'A';			
+			else chessX = -1;			//∆‰À˚¥ÌŒÛ ‰»Î£¨÷√”⁄-1
+
+			Chess c (chessX,chessY,status) ;			//¥¥Ω®∆Â◊”
+
+			//Ω´∆Â◊”ÃÌº”µΩ∆Â≈Ã÷–≤¢±£¥Ê÷¡∆Â ÷µƒ∆Â¬∑∆◊÷–
+			int res = 0;				//≥ı ºªØ¬‰◊”«Èøˆ 0Œ™¬‰◊” ß∞‹ 1Œ™¬‰◊”≥…π¶
+			if(status == -1) 
+				res = p1.PushChess(c,cb);							
+			else if(status == 1)
+				res = p2.PushChess(c,cb);
+
+			if(res == 0)			//¬‰◊” ß∞‹
+			{
+				cout<<"¬‰◊”Œª÷√”–ŒÛ£°«ÎºÏ≤Èƒ˙µƒ ‰»Î£°"<<endl;
+				system("pause");
+			}else						//¬‰◊”≥…π¶
+			{
+				isPopChess = true;			//’˝»∑¬‰◊”£¨ª⁄∆Â◊¥Ã¨÷√Œ™’Ê
+				if( cb.IsBoardWin(c) )
 				{
-					rankBoard.InsertRec(cb,p2.GetName());
-					p2.SetWin(true);
-				}
-				cout<<"”Œœ∑Ω· ¯£°";
-				if(p1.GetWin()) cout<<p1.GetName()<<"ªÒ §£°"<<endl<<endl;
-				else cout<<p2.GetName()<<"ªÒ §£°"<<endl<<endl;
-				return 1;			//”Œœ∑Ω· ¯
-			}else
-				status = -status;		//»Ùªπ√ªæˆ≥ˆ §∏∫£¨‘Ú±‰ªª∆Â…´ºÃ–¯”Œœ∑
+					gameWin = true;
+					Record newRec;
+					system("cls");
+					ShowGameEndTitle();					//œ‘ æ”Œœ∑Ω· ¯Õ∑≤ø
+					cb.ShowBoard(gameWin);			//‘Ÿ¥Ú”°“ª¥Œ◊Ó∫Û∆Â≈Ã
+					if(status == -1)			//µ±«∞◊¥Ã¨Œ™∫⁄◊”£¨‘Úp1ªÒ §
+					{
+						rankBoard.InsertRec(cb,p1.GetName());		//≤Â»Î–¬ºÕ¬º
+						p1.SetWin(true);
+					}
+					else 
+					{
+						rankBoard.InsertRec(cb,p2.GetName());		//≤Â»Î–¬ºÕ¬º
+						p2.SetWin(true);
+					}
+					cout<<"”Œœ∑Ω· ¯£°";
+					if(p1.GetWin()) cout<<p1.GetName()<<"ªÒ §£°"<<endl<<endl;
+					else cout<<p2.GetName()<<"ªÒ §£°"<<endl<<endl;
+					rankBoard.WriteToFile();			//±£¥Êº«¬º
+					return 1;			//”Œœ∑Ω· ¯
+				}else
+					status = -status;		//»Ùªπ√ªæˆ≥ˆ §∏∫£¨‘Ú±‰ªª∆Â…´ºÃ–¯”Œœ∑
+			}
 		}
 	}
 	cout<<"<< ∫Õ∆Â >>"<<endl;		//»Ù∆Â≈Ã“—¬˙‘Ú∫Õ∆Â

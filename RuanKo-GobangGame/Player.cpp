@@ -29,8 +29,9 @@ int Player:: PushChess(Chess c , ChessBoard &cb)					//落子，成功返回1 失败返回0
 	this->chessNum++;
 	return 1;
 }
-int Player:: PopChess(Chess *c , ChessBoard &cb)				//悔棋
+int Player:: PopChess()				//悔棋
 {
+	this->chessNum--;		//退棋一格
 	return 1;
 }
 

@@ -8,7 +8,7 @@ using namespace std;
 //定义排行榜的一个项目条
 typedef struct {
 	ChessBoard chessBoard;			//保存一个棋盘
-	string winName;			//保存一个赢家姓名
+	string winName;						//保存一个赢家姓名
 }Record;
 
 //定义排行榜链表结点Node和头结点指针LinkList

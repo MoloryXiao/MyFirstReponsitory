@@ -35,7 +35,7 @@ void Chess:: SetColor(int color)		//设置颜色
 {
 	this->color = color;
 }
-void Chess:: SetAll(int x,int y,int color)		//设置所有信息
+void Chess:: SetAll(int x,int y,int color)		//设置所有属性信息
 {
 	this->x = x;
 	this->y = y;

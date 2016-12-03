@@ -33,7 +33,7 @@ void ShowAboutUs()				//显示关于我们
 		<<"\t ○●  作者：Xiao Molory"<<endl<<endl
 		<<"\t ○●  版本：version 2.0"<<endl<<endl;		
 }
-void ShowRankTitle()						//显示排行榜头部
+void ShowRankTitle()				//显示排行榜头部
 {
 	cout<<"┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓┓"<<endl
 		<<"○●○●○●  五子棋  排行榜  ●○●○●○"<<endl

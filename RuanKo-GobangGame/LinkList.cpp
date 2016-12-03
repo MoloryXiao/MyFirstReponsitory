@@ -71,7 +71,7 @@ void ShowList(LinkList &L)							//打印单链表
 		return;
 	}else
 	{
-		cout<<setw(5)<<"排行"<<setw(13)<<"棋盘规格"<<setw(12)<<"获胜玩家"<<setw(10)<<"步数"<<endl;			//头部
+		cout<<setw(5)<<"排行"<<setw(12)<<"棋盘规格"<<setw(14)<<"获胜玩家"<<setw(10)<<"步数"<<endl;			//头部
 		LinkList sTemp = L;						//创建“遍历指针”
 		ChessBoard cbShow;					//创建一个用于遍历显示的棋盘
 		Record recShow;							//创建一条用于遍历显示的记录
@@ -81,8 +81,8 @@ void ShowList(LinkList &L)							//打印单链表
 			CopyRec(sTemp->next->data,recShow);			//更新“遍历记录”
 			recShow.chessBoard.Copy(cbShow);				//更新“遍历棋盘”
 			//对相关信息进行打印
-			cout<<setw(5)<<count<<setw(9)<<cbShow.GetHeight()<<"×"<<cbShow.GetWidth()
-				<<setw(12)<<recShow.winName
+			cout<<setw(5)<<count<<setw(8)<<cbShow.GetHeight()<<"×"<<cbShow.GetWidth()
+				<<setw(14)<<recShow.winName
 				<<setw(10)<<cbShow.GetChessNum()<<endl;
 			sTemp = sTemp->next;			//递增
 			count++;				//计数器更新

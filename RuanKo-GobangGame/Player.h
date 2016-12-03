@@ -18,7 +18,7 @@ public :
 	~Player();															//析构函数
 
 	int PushChess(Chess c , ChessBoard &cb);			//落子
-	int PopChess(Chess *c , ChessBoard &cb);			//悔棋
+	int PopChess();						//悔棋
 
 	/*获取属性信息*/
 	bool GetWin();						//属性win
