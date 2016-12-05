@@ -31,8 +31,6 @@ vector<HistoryRec> loadGameVec;		//创建一个加载游戏的vector
 
 int main()
 {
-	SayGameRules();
-	system("pause");
 	rankBoard.ReadFromFile();		//从文件流中读入历史记录
 	LoadGameRec();						//加载游戏保存的记录
 
