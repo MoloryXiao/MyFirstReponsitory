@@ -21,6 +21,15 @@ ChessBoard:: ~ChessBoard()				//析构函数
 	//cout<<"删除成功！"<<endl;
 	//system("pause");
 }
+ChessBoard:: ChessBoard(const ChessBoard &c)
+{
+	this->width = c.width;
+	this->height = c.height;
+	this->chessNum = c.chessNum;
+	this->chessAll = new Chess[width*height];
+	for(int i=0;i<c.chessNum;i++)
+		this->chessAll[i] = c.chessAll[i];
+}
 
 /*基本成员函数*/
 void ChessBoard:: ShowBoard(bool gameWin)			//显示棋盘 gameWin表示棋盘胜负情况
@@ -179,6 +188,10 @@ int ChessBoard::GetHeight()				//获取棋盘高度
 int ChessBoard::GetChessNum()		//获取棋盘棋子数
 {
 	return this->chessNum;
+}
+Chess ChessBoard::GetTheChess(int count)		//获取棋盘中第count个棋子存于c中
+{
+	return this->chessAll[count];
 }
 int ChessBoard::GetTheChessX(int count)		//获取棋盘中第count个棋子的X坐标
 {

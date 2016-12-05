@@ -13,9 +13,10 @@ private :
 	Chess *chessAll;				//棋盘上的棋子
 	int chessNum;					//棋盘上的棋子数
 public :
-	/*构造函数 析构函数*/
+	/*构造函数 析构函数 拷贝构造函数*/
 	ChessBoard(int width=WIDTH,int height=HEIGHT);	
-	~ChessBoard();						
+	~ChessBoard();		
+	ChessBoard(const ChessBoard &c);
 
 	/*基本成员函数*/
 	void ShowBoard(bool win);			//显示棋盘（win表示胜负情况）
@@ -32,9 +33,11 @@ public :
 	int GetWidth();				//获取棋盘宽度
 	int GetHeight();			//获取棋盘高度
 	int GetChessNum();		//获取棋盘棋子数
-	int GetTheChessX(int count);		//获取棋盘中第count个棋子的X坐标
-	int GetTheChessY(int count);		//获取棋盘中第count个棋子的Y坐标
-	int GetTheChessColor(int count);	//获取棋盘中第count个棋子的color颜色
+
+	Chess GetTheChess(int count);			//获取棋盘中第count个棋子
+	int GetTheChessX(int count);			//获取棋盘中第count个棋子的X坐标
+	int GetTheChessY(int count);			//获取棋盘中第count个棋子的Y坐标
+	int GetTheChessColor(int count);		//获取棋盘中第count个棋子的color颜色
 
 	/*胜负判断函数*/
 	bool IsHorizonWin(Chess c , int **board);						//判断是否水平方向获胜

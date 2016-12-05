@@ -16,6 +16,7 @@ public :
 	/*构造函数 析构函数*/
 	Player(string name="Unknown");					//构造函数
 	~Player();															//析构函数
+	Player(const Player &p);									//拷贝构造函数
 
 	int PushChess(Chess c , ChessBoard &cb);			//落子
 	int PopChess();						//悔棋

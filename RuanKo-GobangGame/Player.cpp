@@ -17,6 +17,15 @@ Player::~Player()										//析构函数
 	//cout<<"删除成功！"<<endl;
 	//system("pause");
 }
+Player::Player(const Player &p)
+{
+	this->name = p.name;
+	this->win = p.win;
+	this->chessNum = p.chessNum;
+	this->chessArr = new Chess[MAXSIZE];
+	for(int i=0;i<p.chessNum;i++)
+		this->chessArr[i] = p.chessArr[i];
+}
 
 int Player:: PushChess(Chess c , ChessBoard &cb)					//落子，成功返回1 失败返回0
 {

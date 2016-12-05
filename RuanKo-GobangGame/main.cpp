@@ -1,21 +1,40 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <vector>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
 #include "Menu.h"
 #include "ChessBoard.h"
 #include "Player.h"
 #include "Chess.h"
 #include "Ranking.h"
+#include "History.h"
 using namespace std;
 
-int GamesGo(Player &p1, Player &p2, ChessBoard &cb);		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå
-int GamesRanking();						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
+/*ÓÎÏ·Èë¿Ú ²¢¶ÔÊÇ·ñ´æµµ½øĞĞ´¦Àí*/
+void StartGame(HistoryRec &newRec);
+/*ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå ·µ»Ø-1±íÊ¾ĞèÒª´æÅÌ -9±íÊ¾²»ĞèÒª´æÅÌ*/
+int GamesGo(Player &p1, Player &p2, ChessBoard &cb);	
+/*¼ÓÔØÓÎÏ·*/
+int GamesLoad();
+/*ÅÅĞĞ°ñ²Ù×÷*/
+int GamesRanking();	
+/*¶ÁÈ¡ÓÎÏ·´æµµ*/
+void LoadGameRec();
+/*ÉÏ´«ÓÎÏ·´æµµ*/
+void UploadGameRec();
 
-Ranking rankBoard;			//´´½¨Ò»¸öÅÅĞĞ°ñ¶ÔÏó
+Ranking rankBoard;									//´´½¨Ò»¸öÅÅĞĞ°ñ¶ÔÏó
+vector<HistoryRec> loadGameVec;		//´´½¨Ò»¸ö¼ÓÔØÓÎÏ·µÄvector
 
 int main()
 {
+	SayGameRules();
+	system("pause");
 	rankBoard.ReadFromFile();		//´ÓÎÄ¼şÁ÷ÖĞ¶ÁÈëÀúÊ·¼ÇÂ¼
+	LoadGameRec();						//¼ÓÔØÓÎÏ·±£´æµÄ¼ÇÂ¼
 
 	char choice;
 	bool running = true;
@@ -36,21 +55,27 @@ int main()
 			break;
 		case '1':			//ĞÂ½¨ÓÎÏ·
 			{
-			Player p1;			//´´½¨Íæ¼Ò1
-			Player p2;			//´´½¨Íæ¼Ò2
-			ChessBoard cb(15,15);		//´´½¨ÆåÅÌ
-			GamesGo(p1,p2,cb);		//ÓÎÏ·¿ªÊ¼
+				HistoryRec newRec;
+				string pName1,pName2;			//player name
+				system("cls");
+				cout<<"ÇëÊäÈëÍæ¼ÒPlayer1µÄêÇ³Æ(²»º¬¿Õ¸ñ)£º";
+				cin>>pName1;
+				cout<<"ÇëÊäÈëÍæ¼ÒPlayer2µÄêÇ³Æ(²»º¬¿Õ¸ñ)£º";
+				cin>>pName2;
+				newRec.p1.SetName(pName1);
+				newRec.p2.SetName(pName2);	
+				StartGame(newRec);
 			break;
 			}
 		case '2':			//¼ÓÔØÓÎÏ·
-			cout<<"ÔİÎ´¿ª·Å£¡"<<endl;
+			GamesLoad();
 			break;
 		case '3':			//ÅÅĞĞ°ñ
 			GamesRanking();
 			break;
 		case '4':			//ÓÎÏ·¹æÔò
-			SayHello();
-			cout<<"4"<<endl;
+			system("cls");
+			SayGameRules();
 			break;
 		case '5':			//¹ØÓÚÎÒÃÇ
 			system("cls");
@@ -65,19 +90,34 @@ int main()
 	}
 	return 0;
 }
-int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå
+/*ÓÎÏ·Èë¿Ú ²¢¶ÔÊÇ·ñ´æµµ½øĞĞ´¦Àí*/
+void StartGame(HistoryRec &newRec)
 {
-	string pName1,pName2;			//player name
-	system("cls");
-	cout<<"ÇëÊäÈëÍæ¼ÒPlayer1µÄêÇ³Æ(²»º¬¿Õ¸ñ)£º";
-	cin>>pName1;
-	cout<<"ÇëÊäÈëÍæ¼ÒPlayer2µÄêÇ³Æ(²»º¬¿Õ¸ñ)£º";
-	cin>>pName2;
-	p1.SetName(pName1);
-	p2.SetName(pName2);
+	int res = GamesGo(newRec.p1,newRec.p2,newRec.cb);		//ÓÎÏ·¿ªÊ¼
+	if(res == -1) 
+	{
+		/*»ñÈ¡µ±Ç°Ê±¼ä*/
+		time_t timeGet;
+		time(&timeGet);
+		struct tm *now=localtime(&timeGet);
+		newRec.saveTime = asctime(now);
+		/*¶Ô»ñÈ¡µÄÊ±¼ä½øĞĞ´¦Àí*/
+		int pos = newRec.saveTime.find(" ",0);
+		newRec.saveTime.erase(0,pos+1);		//È¥³ıĞÇÆÚ
+		newRec.saveTime.erase(newRec.saveTime.length()-6,newRec.saveTime.length());		//È¥³ıÄê·İ
 
+		loadGameVec.push_back(newRec);		//´æÅÌ	
+		UploadGameRec();								//´æµµ
+		cout<<endl<<"´æµµ³É¹¦£¡ÕıÔÚ·µ»ØÖ÷²Ëµ¥...."<<endl;
+	}
+}
+/*ÓÎÏ·Ö÷Ìå ·µ»ØÖµÎª1ÔòÄ³·½»ñÊ¤ Îª0ÔòºÍÆå ·µ»Ø-1±íÊ¾ĞèÒª´æÅÌ -9±íÊ¾²»ĞèÒª´æÅÌ*/
+int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		
+{
 	int status = -1;		//Æå×Ó×´Ì¬ 1Îª°×Æå£¬-1ÎªºÚÆå£¬Îå×ÓÆåÎªºÚÆåÏÈÊÖ
 	bool isPopChess = false;			//ÊÇ·ñ¿ÉÒÔ»ÚÆå
+	if(cb.GetChessNum()!=0)			//¼ÙÈçÊÇ»Øµµ½øÀ´µÄÓÎÏ· ¿ÉÒÔ»ÚÆå
+		isPopChess = true;
 	while( ! cb.IsBoardFull() )
 	{
 		system("cls");
@@ -89,7 +129,7 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 
 		cout<<"¡¾ºÚ·½£º"<<p1.GetName()<<"¡¿VS¡¾°×·½£º"<<p2.GetName()<<"¡¿"<<endl
 			<<"¡¾×¢¡¿ÊäÈë' 00 '£ºÍË³öÓÎÏ·\t";
-		if(cb.GetChessNum()!=0)			//»¹Ã»Âä×ÓÇ°£¬²»Êä³öÕâ¾ä»°
+		if(cb.GetChessNum()!=0)				//»¹Ã»Âä×ÓÇ°£¬²»Êä³öÕâ¾ä»°
 			cout<<"ÊäÈë' -1 '£º»ÚÆå"<<endl<<endl;
 		else cout<<endl<<endl;
 
@@ -102,8 +142,28 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 		//ÍË³öÓÎÏ·ÅĞ¶Ï
 		if(x == '0' && chessY == 0)			
 		{
-			cout<<"ÍË³öÓÎÏ·~·µ»ØÖ÷²Ëµ¥..."<<endl;
-			return 1;
+			int isAnswerTrue = 0;		//ÅĞ¶ÏÊäÈëÊÇ·ñ¹æ·¶
+			do{
+				char answer[20];
+				cout<<"ÊÇ·ñ´æµµ¸ÃÓÎÏ·£¿Y/N"<<endl;
+				cin>>answer;
+				if( (answer[0]!='Y' && answer[0]!='N') || answer[1]!='\0' )		//ÊäÈë²»¹æ·¶µÄÇé¿ö
+				{
+					isAnswerTrue = 0;
+					cout<<"ÄúµÄÊäÈëÓĞÎó£¡ÇëÖØĞÂÊäÈë£¡"<<endl<<endl;
+				}else		//ÊäÈë¹æ·¶µÄÇé¿ö
+				{
+					if( answer[0] == 'Y') isAnswerTrue = 1;
+					else if(answer[0] == 'N') isAnswerTrue = 2;
+				}
+			}while( ! isAnswerTrue);
+			if(isAnswerTrue == 1)		//Èç¹ûÊäÈëµÄÊÇyes Ôò·µ»Ø-1½øĞĞ´æµµ
+				return -1;
+			else			//ÊäÈëµÄÊÇno
+			{
+				cout<<endl<<"ÓÎÏ·½áÊø£¡ÕıÔÚ·µ»ØÖ÷²Ëµ¥..."<<endl;
+				return -9;
+			}
 		}
 		//»ÚÆåÅĞ¶Ï£¨ÆåÅÌ³õÊ¼Ê±²»¿ÉÒÔ»ÚÆå£¬ÒÑ¾­»ÚÆåÒ»´ÎµÄ²»¿ÉÒÔÔÙ´Î»ÚÆå£©
 		if(x == '-' && chessY == 1 && cb.GetChessNum()!=0 )			
@@ -177,6 +237,8 @@ int GamesGo(Player &p1, Player &p2, ChessBoard &cb)		//ÓÎÏ·¿ªÊ¼ ·µ»ØÖµÎª1ÔòÄ³·½»
 	cout<<"<< ºÍÆå >>"<<endl;		//ÈôÆåÅÌÒÑÂúÔòºÍÆå
 	return 0;
 }
+
+/*ÅÅĞĞ°ñ²Ù×÷*/
 int GamesRanking()						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
 {
 	system("cls");
@@ -185,7 +247,7 @@ int GamesRanking()						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
 	char numCharIn[20];			//´´½¨×Ö·ûÊı×é½ÓÊÕÊäÈë 
 	cout<<"ÊäÈëÅÅÃû±àºÅ¿ÉÏÔÊ¾¸Ã±àºÅÆåÅÌµÄ×îºóÕ½¿ö£¨ÊäÈë0·µ»ØÖ÷½çÃæ£©£º";
 	cin>>numCharIn;				
-	for(int i=0;i<strlen(numCharIn);i++)			//Èç¹ûÊäÈë°üº¬³ıÊı×ÖµÄÆäËû×Ö·û£¬ÔòÌáÊ¾´íÎó²¢·µ»Ø
+	for(unsigned int i=0;i<strlen(numCharIn);i++)			//Èç¹ûÊäÈë°üº¬³ıÊı×ÖµÄÆäËû×Ö·û£¬ÔòÌáÊ¾´íÎó²¢·µ»Ø
 	{
 		if( ! (numCharIn[i]>='0' && numCharIn[i]<='9') )
 		{
@@ -211,4 +273,99 @@ int GamesRanking()						//ÅÅĞĞ°ñÄÚµÄ²Ù×÷
 			return 1;	
 		}
 	}
+}
+
+/*¼ÓÔØÓÎÏ·*/
+int GamesLoad()
+{
+	system("cls");
+	LoadGameTitle();
+	int vecLen = loadGameVec.size();
+	if(vecLen == 0 )		//Ã»ÓĞÈÎºÎ¼ÇÂ¼
+	{
+		cout<<"\t\t    ÎŞ"<<endl<<endl;
+		return 1;
+	}else
+	{
+		cout<<setw(5)<<"ĞòºÅ"<<setw(10)<<"ºÚ·½"<<setw(8)<<"¶ÔÕ½"<<setw(10)<<"°×·½"<<setw(18)<<"´æµµÊ±¼ä"<<endl;
+		cout<<"---------------------------------------------------"<<endl;
+		for(unsigned int i=0;i<vecLen;i++)
+		{
+			HistoryRec theRec = loadGameVec[i];
+			cout<<setw(5)<<i+1<<setw(10)<<theRec.p1.GetName()<<setw(8)<<" VS "<<setw(10)<<
+				theRec.p2.GetName()<<setw(18)<<theRec.saveTime<<endl;
+		}
+		cout<<endl;
+		char choice_char[20];
+		cout<<"ÇëÊäÈë¶ÔÓ¦ĞòºÅ£¬¼ÌĞøÓÎÏ·£¨ÊäÈë0·µ»Ø£©£º";
+		cin>>choice_char;
+
+		int choice_int = atoi(choice_char);
+		if(choice_int == 0) return 1;
+		if(choice_int <1 || choice_int >loadGameVec.size() )
+		{
+			cout<<"ÄúµÄÊäÈëÓĞÎó£¡Çë¼ì²éÊäÈë£¡"<<endl;
+			return 1;
+		}
+		cout<<endl;
+		
+		HistoryRec newRec = loadGameVec[choice_int-1];		//±ØĞëÒªĞÂ´´½¨Ò»¸ö¼ÇÂ¼£¬ÒòÎªÏÂÒ»¾äÓï¾äÎªÒıÓÃ
+		StartGame(newRec);			//¼ÌĞøÓÎÏ·
+		return 1;
+	}
+}
+
+/*¶ÁÈ¡ÓÎÏ·´æµµ*/
+void LoadGameRec()
+{
+	ifstream ifs("HistoryRec.data");
+	int recNum =0;		//¼ÓÔØÓÎÏ·µÄÏîÄ¿Êı
+	ifs>>recNum;			//Á÷ÈëÊı¾İ
+
+	for(int i=0;i<recNum;i++)			//Ñ­»·²åÈëĞÂ¼ÍÂ¼µ½ loadGameVecÖĞ
+	{
+		HistoryRec newRec;					//´´½¨Ò»ÌõÀúÊ·¼ÇÂ¼
+		string p1Name,p2Name;			//Ã¿Ìõ¼ÇÂ¼µÄÁ½¸öÍæ¼ÒÃû
+		int p1ChessNum=0 , p2ChessNum = 0;			//Æå×ÓÊı
+		
+		ifs>>p1Name>>p1ChessNum;		//Á÷ÈëÍæ¼Ò1Ãû×ÖºÍÆäËùÏÂµÄÆå×ÓÊı
+		ifs>>p2Name>>p2ChessNum;		//Á÷ÈëÍæ¼Ò2Ãû×ÖºÍÆäËùÏÂµÄÆå×ÓÊı
+		newRec.p1.SetName(p1Name);		//ÉèÖÃºÃÍæ¼ÒµÄĞÕÃû
+		newRec.p2.SetName(p2Name);		
+		for(int j=0;j<p1ChessNum+p2ChessNum;j++)		//Ñ­»·²åÈëÆå×Ó
+		{
+			int chessX,chessY,chessColor;		
+			ifs>>chessX>>chessY>>chessColor;
+			Chess newChess(chessX,chessY,chessColor);		//¸ù¾İ×ø±êºÍÑÕÉ«¹¹½¨Ò»¸öÆå×Ó
+			if(j%2==0)			//Å¼ÊıÂÖÔòp1²åÈëÆå×Ó
+				newRec.p1.PushChess(newChess,newRec.cb);
+			else						//ÆæÊıÂÖÔòp2²åÈëÆå×Ó
+				newRec.p2.PushChess(newChess,newRec.cb);
+		}
+		ifs.get();		//ÉáÆúÒ»¸ö»»ĞĞ·û
+		getline(ifs,newRec.saveTime);		//¶ÁÈëÊ±¼ä
+		loadGameVec.push_back(newRec);			//½«ĞÂ¼ÍÂ¼Ñ¹ÈëvectorÖĞ
+	}
+	ifs.close();
+}
+
+/*ÉÏ´«ÓÎÏ·´æµµ*/
+void UploadGameRec()			//Ğ´ÈëÎÄ¼şÖĞ
+{
+	ofstream ofs("HistoryRec.data");
+	ofs<<loadGameVec.size()<<endl;
+	int loadLen = loadGameVec.size();
+	for(int i=0;i<loadLen;i++)
+	{
+		ofs<<loadGameVec[i].p1.GetName()<<" "<<loadGameVec[i].p1.GetChessNum()<<endl
+			<<loadGameVec[i].p2.GetName()<<" "<<loadGameVec[i].p2.GetChessNum()<<endl;
+		int chessNum = loadGameVec[i].cb.GetChessNum();
+		for(int j=0 ; j<chessNum ; j++)
+		{
+			Chess c = loadGameVec[i].cb.GetTheChess(j);		//»ñÈ¡ÆåÅÌÖĞµÄµÚj¸öÆå×Ó
+			ofs<<c.GetX()<<" "<<c.GetY()<<" "<<c.GetColor()<<endl;
+		}
+		ofs<<loadGameVec[i].saveTime<<endl;
+	}
+	ofs.close();
 }
