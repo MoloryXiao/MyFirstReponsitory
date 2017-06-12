@@ -1,28 +1,28 @@
-ÓÃÀàÐ´£º
-1. Íæ¼ÒÀàPlayer
-ÊôÐÔ£ºÐÕÃûstring Ê¤¸ºbool ÆåÂ·¼ÇÂ¼array
-·½·¨£ºÂä×Óint PushChess() »ÚÆåint PopChess() Õ»
-2. ÆåÅÌÀàChessBoard
-ÊôÐÔ£ºÐÐÊýint ÁÐÊýint ÆåÅÌ¹æÄ£array Âä×ÓÊýint
-·½·¨£ºÏÔÊ¾ÆåÅÌvoid ShowBoard() 
-3. Æå×ÓÀàChess
-ÊôÐÔ£º×ø±êx ×ø±êy
-·½·¨£º³õÊ¼»¯
+ç”¨ç±»å†™ï¼š
+1. çŽ©å®¶ç±»Player
+å±žæ€§ï¼šå§“åstring èƒœè´Ÿbool æ£‹è·¯è®°å½•array
+æ–¹æ³•ï¼šè½å­int PushChess() æ‚”æ£‹int PopChess() æ ˆ
+2. æ£‹ç›˜ç±»ChessBoard
+å±žæ€§ï¼šè¡Œæ•°int åˆ—æ•°int æ£‹ç›˜è§„æ¨¡array è½å­æ•°int
+æ–¹æ³•ï¼šæ˜¾ç¤ºæ£‹ç›˜void ShowBoard() 
+3. æ£‹å­ç±»Chess
+å±žæ€§ï¼šåæ ‡x åæ ‡y
+æ–¹æ³•ï¼šåˆå§‹åŒ–
 
-3. ÅÅÐÐ°ñÀàRanking
-ÊôÐÔ£º³¤¶Èint ÅÅÐÐÊý¾ÝList Á´±í
-·½·¨£ºÄæÐò
+3. æŽ’è¡Œæ¦œç±»Ranking
+å±žæ€§ï¼šé•¿åº¦int æŽ’è¡Œæ•°æ®List é“¾è¡¨
+æ–¹æ³•ï¼šé€†åº
 
-ÐÂµã×Ó£º
-¢Ù»ÚÆåPopChess()
-¢ÚÆå¾Ö¼ÇÂ¼£¨ÉèÖÃË¢ÐÂÆµÂÊ£¬È»ºóÖØÏÖÏÂÆå¹ý³Ì£©
-¢ÛÊäÈëÏàÓ¦ÐòºÅ¿ÉÒÔµ÷³ö×îºóÆåÅÌµÄÑù×Ó
-ËùÒÔ×îºóÅÅÐÐ°ñ´æ·ÅµÄÊý¾ÝÊÇÒ»¸öÅÅÐÐÌõ½á¹¹Ìå£º°üÀ¨Ò»¸öÃû×ÖºÍ²½Êý£¨Ê¤·½£©ºÍÒ»¸öÆåÅÌChessBoard
+æ–°ç‚¹å­ï¼š
+â‘ æ‚”æ£‹PopChess()
+â‘¡æ£‹å±€è®°å½•ï¼ˆè®¾ç½®åˆ·æ–°é¢‘çŽ‡ï¼Œç„¶åŽé‡çŽ°ä¸‹æ£‹è¿‡ç¨‹ï¼‰
+â‘¢è¾“å…¥ç›¸åº”åºå·å¯ä»¥è°ƒå‡ºæœ€åŽæ£‹ç›˜çš„æ ·å­
+æ‰€ä»¥æœ€åŽæŽ’è¡Œæ¦œå­˜æ”¾çš„æ•°æ®æ˜¯ä¸€ä¸ªæŽ’è¡Œæ¡ç»“æž„ä½“ï¼šåŒ…æ‹¬ä¸€ä¸ªåå­—å’Œæ­¥æ•°ï¼ˆèƒœæ–¹ï¼‰å’Œä¸€ä¸ªæ£‹ç›˜ChessBoard
 
-ÐèÒª×¢ÒâµÄµã£ººÚ·½ºÍ°×·½ÄÄ±ßÏÈÏÂ×Ó£¿
--ºÚ·½ÏÈÏÂ£¬ÏàÓ¦µÄºÚ·½ÐèÒª½ûÊÖ
+éœ€è¦æ³¨æ„çš„ç‚¹ï¼šé»‘æ–¹å’Œç™½æ–¹å“ªè¾¹å…ˆä¸‹å­ï¼Ÿ
+-é»‘æ–¹å…ˆä¸‹ï¼Œç›¸åº”çš„é»‘æ–¹éœ€è¦ç¦æ‰‹
 
-¿¼ÂÇ£º
-1. Æå×ÓÖØµþ
-2. Æå×ÓÔ½½ç
-3. Ö¸Õë´¦Àí Îö¹¹´¦Àí 
+è€ƒè™‘ï¼š
+1. æ£‹å­é‡å 
+2. æ£‹å­è¶Šç•Œ
+3. æŒ‡é’ˆå¤„ç† æžæž„å¤„ç†
