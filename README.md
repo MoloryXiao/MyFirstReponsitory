@@ -1,2 +1,2 @@
-# MyFirstReponsitory
-HelloGitHub
+# RuanKo_五子棋游戏
+五子棋游戏代码
